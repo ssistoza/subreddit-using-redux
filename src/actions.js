@@ -47,11 +47,14 @@ function fetchPosts(subreddit) {
 function shouldFetchPosts(state, subreddit) {
   const posts = state.postsBySubreddit[subreddit];
   if (!posts) {
+    console.log('should fetch true');
     return true;
   } else if (posts.isFetching) {
+    console.log('should fetch false');
     return false;
   } else {
-    return posts.didInvalidate;
+    console.log('should fetch', posts.didInvalidation);
+    return posts.didInvalidation;
   }
 }
 
@@ -62,5 +65,27 @@ export function fetchPostsIfNeeded(subreddit) {
     } else {
       return Promise.resolve();
     }
+  };
+}
+
+export const REQUEST_POSTER = 'REQUEST_POSTER';
+export const RECEIVE_POSTER = 'RECEIVE_POSTER';
+
+function requestPoster(username) {
+  return { type: REQUEST_POSTER, username };
+}
+
+function receivePoster(username) {
+  return { type: RECEIVE_POSTER, username };
+}
+
+// Thunk
+function fetchPoster(username) {
+  return dispatch => {
+    dispatch(requestPoster(username));
+
+    return fetch(`https://www.redit.com/user/${username}/about.json`)
+      .then(response => response.json())
+      .then(json => dispatch(receivePoster(username, json)));
   };
 }

@@ -1,12 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Segment } from 'semantic-ui-react';
+import Post from './Post';
 
 const Posts = ({ posts }) => (
-  <ul>
+  <React.Fragment>
     {posts.map((post, i) => (
-      <li key={i}>{post.title}</li>
+      <Segment vertical key={i}>
+        <Post post={post} />
+      </Segment>
     ))}
-  </ul>
+  </React.Fragment>
 );
 
 Posts.propTypes = {
